@@ -4,6 +4,8 @@ import sys
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.stats import norm
+from scipy.stats import skewnorm
+from scipy import stats
 import distributions.gaussDistribution
 
 
@@ -23,29 +25,58 @@ eval_data = np.linspace(-5, 5, num=200)
 # eval_data = np.array([0.0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10.0])
 # print(eval_data)
 
-gD = distributions.gaussDistribution.gaussDistribution(0)
+gD = distributions.gaussDistribution.generalNormDist(0)
 print(gD.pdf(0))
-gD1 = distributions.gaussDistribution.gaussDistribution(mu=0, skew=3)
-gD2 = distributions.gaussDistribution.gaussDistribution(mu=0, skew=-3)
-gD3 = distributions.gaussDistribution.gaussDistribution(mu=0, skew=-.3)
-gD4 = distributions.gaussDistribution.gaussDistribution(mu=0, skew=.3)
-gD5 = distributions.gaussDistribution.gaussDistribution(mu=0, skew=6)
+gD1 = distributions.gaussDistribution.generalNormDist(loc=0, skew=3)
+gD2 = distributions.gaussDistribution.generalNormDist(loc=0, skew=-3)
+gD3 = distributions.gaussDistribution.generalNormDist(loc=0, skew=-.3)
+gD4 = distributions.gaussDistribution.generalNormDist(loc=0, skew=.3)
+gD5 = distributions.gaussDistribution.generalNormDist(loc=0, skew=6)
 
-gD_o1 = distributions.gaussDistribution.gaussDistribution(mu=1, omega=.3)
-gD_o2 = distributions.gaussDistribution.gaussDistribution(mu=0, omega=2)
-gD_o3 = distributions.gaussDistribution.gaussDistribution(mu=0, omega=5)
+gD_o1 = distributions.gaussDistribution.generalNormDist(loc=1, omega=.3)
+gD_o2 = distributions.gaussDistribution.generalNormDist(loc=0, omega=2)
+gD_o3 = distributions.gaussDistribution.generalNormDist(loc=0, omega=5)
 
 tt = gD.pdf(eval_data)
 
+gD_t = distributions.gaussDistribution.generalNormDist(loc=0, skew=3)
+
+
 num_bins = 10
 fig, ax = plt.subplots()
-n, bins, patches = ax.hist(data, num_bins, facecolor='blue', alpha=0.5)
-print(n)
-print(np.max(n))
-# print(tt)
-ax.plot(eval_data, tt*10)
+n, bins, patches = ax.hist(data, num_bins, facecolor='blue', alpha=0.5, label='data')
 
-fig, ax2 = plt.subplots(2)
+e_alpha, e_loc, e_omega = stats.skewnorm.fit(data)
+t_eval = np.linspace(np.min(data) - 2, np.max(data))
+tt_s = stats.skewnorm(e_alpha, e_loc, e_omega)
+ax.plot(t_eval, tt_s.pdf(t_eval)*10, label='scipy')
+
+gD_t = distributions.gaussDistribution.generalNormDist(loc=e_loc, skew=e_alpha, omega=e_omega)
+ax.plot(t_eval, gD_t.pdf(t_eval)*10, label='mine')
+
+ax.legend()
+
+####################
+fig, ax5 = plt.subplots()
+tt_s2 = stats.skewnorm(0.1, 2, 1)
+gD_t2 = distributions.gaussDistribution.generalNormDist(loc=2, skew=0.1, omega=1)
+t_eval2 = np.linspace(0, 4)
+ax5.plot(t_eval2, gD_t2.pdf(t_eval2), label='mine')
+ax5.plot(t_eval2, tt_s2.pdf(t_eval2), label='scipy')
+ax5.legend()
+####################
+
+fig, ax6 = plt.subplots()
+# tt_s2 = stats.skewnorm(0.1, 2, 1)
+# gD_t2 = distributions.gaussDistribution.generalNormDist(loc=2, skew=0.1, omega=1)
+# t_eval2 = np.linspace(0, 4)
+ax6.plot(t_eval2, gD_t2.loglkd(t_eval2), label='mine')
+ax6.plot(t_eval2, tt_s2.logpdf(t_eval2), label='scipy')
+ax6.set_title('log-likelihood')
+ax6.legend()
+####################
+
+fig, ax2 = plt.subplots(3)
 ax2[0].plot(eval_data, gD2.cdf(eval_data), color='g', label='alpha=-3')
 ax2[0].plot(eval_data, gD3.cdf(eval_data), color='m', label='alpha=-0.3')
 ax2[0].plot(eval_data, gD.cdf(eval_data), color='b', label='alpha=0')
@@ -61,18 +92,18 @@ ax2[1].plot(eval_data, gD1.pdf(eval_data), color='r', label='alpha=3')
 ax2[1].plot(eval_data, gD5.pdf(eval_data), color='c', label='alpha=5')
 ax2[1].legend()
 
-# ax2[2].plot(eval_data, gD.pdf(eval_data), color='b', label='omega=1')
-# ax2[2].plot(eval_data, gD_o1.pdf(eval_data), color='r', label='omega=0.3')
-# ax2[2].plot(eval_data, gD_o2.pdf(eval_data), color='g', label='omega=2')
-# ax2[2].plot(eval_data, gD_o3.pdf(eval_data), color='m', label='omega=5')
-# ax2[2].legend()
+ax2[2].plot(eval_data, gD.pdf(eval_data), color='b', label='omega=1')
+ax2[2].plot(eval_data, gD_o1.pdf(eval_data), color='r', label='omega=0.3')
+ax2[2].plot(eval_data, gD_o2.pdf(eval_data), color='g', label='omega=2')
+ax2[2].plot(eval_data, gD_o3.pdf(eval_data), color='m', label='omega=5')
+ax2[2].legend()
 
 # print(gD.norm_cdf(eval_data))
 
 fig, ax3 = plt.subplots(2)
-ax3[0].plot(eval_data[1:], gD.norm_cdf(eval_data), label='my cdf')
+ax3[0].plot(eval_data, gD.norm_cdf(eval_data), label='my cdf')
 ax3[0].plot(eval_data, norm.cdf(eval_data), label='scipy cdf')
-ax3[0].plot(eval_data[1:], gD.norm_cdf(-0.3*eval_data), label='my cdf(alpha=-0.3)')
+ax3[0].plot(eval_data, gD.norm_cdf(-0.3*eval_data), label='my cdf(alpha=-0.3)')
 ax3[0].plot(eval_data, norm.cdf(-0.3*eval_data), label='scipy cdf(alpha=-0.3)')
 ax3[0].legend()
 ax3[0].set_title('cdf')
