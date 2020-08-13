@@ -1,0 +1,26 @@
+Metadata-Version: 1.2
+Name: ML-algorithms
+Version: 1.0
+Summary: various ML algorithms
+Home-page: https://github.com/yias/ML_algorithms
+Author: Iason Batzianoulis
+Author-email: iasonbatz@gmail.com
+License: GNU GPL v3
+Description: modules with implementation of vaious ML algorithms from scratch
+Keywords: machine-learning distributions
+Platform: UNKNOWN
+Classifier: Development Status :: 1 - Stable
+Classifier: Environment :: Console
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Information Technology
+Classifier: Intended Audience :: Education
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: GNU GPL v3 License
+Classifier: Natural Language :: English
+Classifier: Operating System :: OS Independent
+Classifier: Topic :: Scientific/Engineering :: Computer Science
+Classifier: Topic :: Scientific/Engineering :: Socket Communication
+Classifier: Programming Language :: Python :: 2.7
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Requires-Python: >=3.7

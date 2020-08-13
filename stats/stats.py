@@ -18,7 +18,7 @@ def covar(data):
     """
     mu = np.sum(data, axis=0) / data.shape[0]
 
-    covMatrix = np.dot((data - mu).T , (data - mu)) / (data.shape[0] - 1);
+    covMatrix = np.dot((data - mu).T , (data - mu)) / (data.shape[0] - 1)
 
     return covMatrix
 
