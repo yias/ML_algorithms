@@ -122,16 +122,33 @@ ax3[1].set_title('pdf')
 data2d = np.array([data, data]).T
 
 e_data2d = np.array([eval_data, eval_data])
-gD = gaussDistribution.generalNormDist(loc=[0,0])
+gD = gaussDistribution.generalNormDist(loc=[0,0], omega=[0.5, 1], skew=np.array([[0, 0],[0, 2]]))
 # print(st.covat(e_data2d))
 
-pdf_t =gD.norm_pdf(e_data2d.T)
+pdf_t =gD.pdf(e_data2d.T)
 
 # print(pdf_t.shape)
 # print(pdf_t)
 
 fig, ax7 = plt.subplots()
 ax7.plot(e_data2d[0, :], pdf_t)
+tt = stats.multivariate_normal([0,1], np.array([[1,0],[0,1]])).pdf(e_data2d.T)
+print('tt: ', tt.shape)
+ax7.plot(e_data2d[0,:], tt, label='scipy')
+ax7.plot(e_data2d[0,:], pdf_t, label='mine pdf')
+ax7.plot(e_data2d[0,:], np.exp(gD.logpdf(e_data2d.T)), label='from logpdf')
+ax7.legend()
+print(tt.sum())
+
+x, y = np.mgrid[-2:2:.01, -5:2:.01]
+fig, ax8 = plt.subplots()
+pos = np.dstack((x, y))
+print('pos: ', pos.shape)
+# ax8 = fig.add_subplot(111)
+tt_dist = stats.multivariate_normal([0,0], np.array([[1,0],[0,1]]))
+tt_pdf = tt_dist.pdf(pos)
+print('tt_pdf: ', tt_pdf.shape)
+ax8.contourf(x, y, gD.pdf(pos))
 # ax7[1].plot(e_data2d[1, :], pdf_t[:,1])
 
 
